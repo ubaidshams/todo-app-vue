@@ -1,17 +1,39 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <CreateTask />
+
+  <li v-for="(task, index) in todoList" :key="index">
+    {{ task }}
+    <button @click="editTask(index)">Edit</button>
+    <button @click="deleteTask(index)">Delete</button>
+  </li>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import CreateTask from "./components/CreateTask.vue";
+import { provide, reactive, toRefs } from "vue";
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+  components: { CreateTask },
+  setup() {
+    let state = reactive({
+      todoList: [],
+    });
+    function editTask(index) {
+      console.log(index)
+      let edit = prompt("Enter a new task");
+      this.todoList.splice(index, 1, edit);
+    }
+    function deleteTask(index) {
+      this.todoList.splice(index, 1);
+    }
+    provide("c_todoList", state.todoList);
+    return {
+      ...toRefs(state),
+      editTask,
+      deleteTask,
+    };
+  },
+};
 </script>
 
 <style>
@@ -19,8 +41,9 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 </style>
